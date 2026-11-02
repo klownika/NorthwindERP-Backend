@@ -1,0 +1,19 @@
+## .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+TestResults/
+*.log
+
+## Rider / VS Code
+.idea/
+.vscode/
+
+## Secretos: NUNCA subir cadenas de conexión ni claves reales
+appsettings.Local.json
+*.env
+.env*

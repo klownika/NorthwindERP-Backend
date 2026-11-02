@@ -1,0 +1,112 @@
+### Pruebas rápidas desde Visual Studio / VS Code (extensión REST Client)
+### 1) Ejecuta "login", copia el token y pégalo en @token.
+
+@host = http://localhost:5080
+@token = PEGA_AQUI_EL_TOKEN
+
+### Salud / conexión a Supabase
+GET {{host}}/api/health
+
+### 🔐 Login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin123*"
+}
+
+### Usuario actual
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### 📦 Productos (con búsqueda opcional)
+GET {{host}}/api/products?search=cha
+Authorization: Bearer {{token}}
+
+### Stock (solo stock bajo)
+GET {{host}}/api/inventory/stock?lowStockOnly=true
+Authorization: Bearer {{token}}
+
+### Kardex filtrado
+GET {{host}}/api/inventory/kardex?type=OUTBOUND&from=2026-01-01&to=2026-12-31
+Authorization: Bearer {{token}}
+
+### 🛒 Pedido con cliente NUEVO
+POST {{host}}/api/orders/with-customer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "newCustomer": {
+    "customerName": "Bodega San Martín",
+    "contactName": "Rosa Quispe",
+    "address": "Av. La Cultura 123",
+    "city": "Cusco",
+    "postalCode": "08000",
+    "country": "Peru"
+  },
+  "shipperId": 1,
+  "items": [
+    { "productId": 1, "quantity": 5 },
+    { "productId": 2, "quantity": 3 }
+  ]
+}
+
+### 🛒 Pedido con cliente EXISTENTE
+POST {{host}}/api/orders/with-customer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "shipperId": 2,
+  "items": [ { "productId": 3, "quantity": 2 } ]
+}
+
+### Historial de un cliente
+GET {{host}}/api/orders/customer/1
+Authorization: Bearer {{token}}
+
+### Todos los pedidos (vista)
+GET {{host}}/api/orders
+Authorization: Bearer {{token}}
+
+### Eliminar pedido
+DELETE {{host}}/api/orders/10443
+Authorization: Bearer {{token}}
+
+### 👥 Actualizar dirección de cliente
+PUT {{host}}/api/customers/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "address": "Jr. Nuevo 456",
+  "city": "Lima"
+}
+
+### 📥 Nueva orden de compra
+POST {{host}}/api/purchase-orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "supplierId": 1,
+  "requiredDate": "2026-12-15",
+  "items": [
+    { "productId": 1, "quantity": 50, "unitPrice": 12.5 }
+  ]
+}
+
+### Recibir orden de compra (suma stock + INBOUND)
+PUT {{host}}/api/purchase-orders/1/receive
+Authorization: Bearer {{token}}
+
+### 📊 KPIs
+GET {{host}}/api/dashboard/kpis
+Authorization: Bearer {{token}}
+
+### Ventas vs inversión por mes
+GET {{host}}/api/dashboard/sales-vs-investment
+Authorization: Bearer {{token}}
